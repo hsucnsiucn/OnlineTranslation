@@ -21,7 +21,10 @@
                 --primary-hover: #3a5a8a;
                 --text: #333;
                 --text-light: #888;
-                --radius: 8px
+                --radius: 8px;
+                --danger: #e74c3c;
+                --danger-hover: #c0392b;
+                --success: #27ae60
             }
 
             body {
@@ -64,7 +67,10 @@
                 color: var(--text);
                 cursor: pointer;
                 font-size: 13px;
-                transition: all .2s
+                transition: all .2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 4px
             }
 
             .btn:hover {
@@ -86,6 +92,21 @@
                 cursor: not-allowed
             }
 
+            .btn-danger {
+                color: var(--danger);
+                border-color: var(--danger)
+            }
+
+            .btn-danger:hover {
+                background: var(--danger);
+                color: #fff
+            }
+
+            .btn-sm {
+                padding: 4px 10px;
+                font-size: 12px
+            }
+
             .settings-panel {
                 background: var(--card);
                 border-bottom: 1px solid var(--border);
@@ -95,7 +116,8 @@
             }
 
             .settings-panel.open {
-                max-height: 500px
+                max-height: 600px;
+                overflow-y: auto
             }
 
             .settings-inner {
@@ -119,7 +141,7 @@
             }
 
             .setting-row input,
-            .setting-row textarea {
+            .setting-row select {
                 flex: 1;
                 padding: 8px 12px;
                 border: 1px solid var(--border);
@@ -131,16 +153,78 @@
             }
 
             .setting-row input:focus,
-            .setting-row textarea:focus {
+            .setting-row select:focus {
                 border-color: var(--primary)
             }
 
             .setting-row textarea {
+                flex: 1;
+                padding: 8px 12px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 13px;
+                font-family: "Cascadia Code", Consolas, "Courier New", monospace;
+                outline: none;
+                transition: border-color .2s;
                 resize: vertical;
                 min-height: 80px;
-                font-family: "Cascadia Code", Consolas, "Courier New", monospace;
-                font-size: 12px;
                 line-height: 1.5
+            }
+
+            .setting-row textarea:focus {
+                border-color: var(--primary)
+            }
+
+            .profile-actions {
+                display: flex;
+                gap: 6px;
+                flex-shrink: 0
+            }
+
+            .extra-body-panel {
+                overflow: hidden;
+                transition: max-height .3s ease;
+                max-height: 0;
+                padding-left: 92px
+            }
+
+            .extra-body-panel.open {
+                max-height: 500px;
+                overflow-y: auto
+            }
+
+            .extra-body-row {
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                margin-bottom: 6px
+            }
+
+            .extra-body-row input {
+                padding: 6px 10px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 12px;
+                outline: none;
+                transition: border-color .2s
+            }
+
+            .extra-body-row input:focus {
+                border-color: var(--primary)
+            }
+
+            .extra-body-row .key-input {
+                width: 120px;
+                flex-shrink: 0
+            }
+
+            .extra-body-row .val-input {
+                flex: 1;
+                min-width: 0
+            }
+
+            #addExtraBodyBtn {
+                margin-top: 4px
             }
 
             .main {
@@ -214,19 +298,128 @@
                 margin-top: 8px;
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
+                gap: 8px;
                 flex-shrink: 0
+            }
+
+            .model-select-wrap {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                min-width: 0
+            }
+
+            .model-select-wrap select {
+                flex: 1;
+                padding: 8px 12px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 13px;
+                outline: none;
+                transition: border-color .2s;
+                min-width: 0
+            }
+
+            .model-select-wrap select:focus {
+                border-color: var(--primary)
+            }
+
+            .model-add-row {
+                display: none;
+                align-items: center;
+                gap: 6px;
+                margin-top: 4px;
+                flex-shrink: 0
+            }
+
+            .model-add-row.visible {
+                display: flex
+            }
+
+            .model-add-row input {
+                flex: 1;
+                padding: 6px 10px;
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 12px;
+                outline: none;
+                min-width: 0
+            }
+
+            .model-add-row input:focus {
+                border-color: var(--primary)
             }
 
             .char-count {
                 font-size: 12px;
-                color: var(--text-light)
+                color: var(--text-light);
+                white-space: nowrap
             }
 
             .translate-btn {
                 padding: 10px 32px;
                 font-size: 14px;
-                font-weight: 500
+                font-weight: 500;
+                flex-shrink: 0
+            }
+
+            .auto-translate-row {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 6px;
+                flex-shrink: 0
+            }
+
+            .toggle-switch {
+                position: relative;
+                width: 36px;
+                height: 20px;
+                flex-shrink: 0
+            }
+
+            .toggle-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0
+            }
+
+            .toggle-slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--border);
+                transition: .3s;
+                border-radius: 20px
+            }
+
+            .toggle-slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 2px;
+                bottom: 2px;
+                background-color: white;
+                transition: .3s;
+                border-radius: 50%
+            }
+
+            .toggle-switch input:checked + .toggle-slider {
+                background-color: var(--primary)
+            }
+
+            .toggle-switch input:checked + .toggle-slider:before {
+                transform: translateX(16px)
+            }
+
+            .auto-label {
+                font-size: 12px;
+                color: var(--text-light)
             }
 
             .status-bar {
@@ -241,7 +434,7 @@
             }
 
             .status-bar .error {
-                color: #e74c3c
+                color: var(--danger)
             }
 
             .loading {
@@ -280,6 +473,10 @@
                 .setting-row label {
                     min-width: auto
                 }
+
+                .panel-footer {
+                    flex-wrap: wrap
+                }
             }
         </style>
     </head>
@@ -298,6 +495,22 @@
              id="settingsPanel">
             <div class="settings-inner">
                 <div class="setting-row">
+                    <label>API 配置</label>
+                    <select id="profileSelect"></select>
+                    <div class="profile-actions">
+                        <button class="btn btn-sm"
+                                id="addProfileBtn">+ 新增</button>
+                        <button class="btn btn-sm btn-danger"
+                                id="delProfileBtn">删除</button>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label>配置名称</label>
+                    <input type="text"
+                           id="profileName"
+                           placeholder="如：DeepSeek">
+                </div>
+                <div class="setting-row">
                     <label>API 地址</label>
                     <input type="text"
                            id="baseUrl"
@@ -310,15 +523,31 @@
                            placeholder="sk-...">
                 </div>
                 <div class="setting-row">
-                    <label>模型</label>
-                    <input type="text"
-                           id="modelName"
-                           placeholder="deepseek-chat">
+                    <label>自动翻译延迟</label>
+                    <input type="number"
+                           id="autoDelay"
+                           min="300"
+                           max="10000"
+                           step="100"
+                           placeholder="1000"
+                           style="max-width:120px">
+                    <span style="font-size:12px;color:var(--text-light)">毫秒 (ms)</span>
                 </div>
                 <div class="setting-row">
                     <label>System Prompt</label>
                     <textarea id="systemPrompt"
                               rows="4"></textarea>
+                </div>
+                <div class="setting-row">
+                    <label>自定义请求体</label>
+                    <button class="btn btn-sm"
+                            id="toggleExtraBody">编辑</button>
+                </div>
+                <div class="extra-body-panel"
+                     id="extraBodyPanel">
+                    <div id="extraBodyList"></div>
+                    <button class="btn btn-sm"
+                            id="addExtraBodyBtn">+ 添加参数</button>
                 </div>
             </div>
         </div>
@@ -334,10 +563,36 @@
                           id="inputBox"
                           placeholder="在此输入要翻译的文本..."></textarea>
                 <div class="panel-footer">
-                    <span class="char-count"
-                          id="charCount">0 字符</span>
+                    <div class="model-select-wrap">
+                        <select id="modelSelect"></select>
+                        <button class="btn btn-sm"
+                                id="addModelBtn">+</button>
+                        <button class="btn btn-sm btn-danger"
+                                id="delModelBtn">−</button>
+                    </div>
                     <button class="btn btn-primary translate-btn"
                             id="translateBtn">翻译</button>
+                </div>
+                <div class="model-add-row"
+                     id="modelAddRow">
+                    <input type="text"
+                           id="newModelInput"
+                           placeholder="输入模型名称，回车添加">
+                    <button class="btn btn-sm"
+                            id="confirmAddModelBtn">添加</button>
+                    <button class="btn btn-sm"
+                            id="cancelAddModelBtn">取消</button>
+                </div>
+                <div class="auto-translate-row">
+                    <label class="toggle-switch">
+                        <input type="checkbox"
+                               id="autoTranslate">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="auto-label">自动翻译</span>
+                    <span class="char-count"
+                          id="charCount"
+                          style="margin-left:auto">0 字符</span>
                 </div>
             </div>
             <div class="panel">
@@ -350,7 +605,8 @@
                           id="outputBox"
                           readonly
                           placeholder="翻译结果将显示在这里..."></textarea>
-                <div class="panel-footer">
+                <div class="panel-footer"
+                     style="justify-content:flex-end">
                     <span class="char-count"
                           id="outputCharCount">0 字符</span>
                     <button class="btn"
@@ -366,9 +622,6 @@
 
         <script>
             const DEFAULTS = {
-                baseUrl: 'https://api.deepseek.com/v1',
-                apiKey: '',
-                model: 'deepseek-chat',
                 systemPrompt: `你是一个专业的简体中文母语译者，需将文本流畅地翻译为简体中文。
 
 ## 翻译规则
@@ -382,15 +635,45 @@ Document Metadata:
 Title: 《Options》`
             };
 
+            const STORAGE_KEYS = {
+                profiles: 'trans_profiles',
+                activeProfile: 'trans_active_profile',
+                autoDelay: 'trans_auto_delay',
+                autoTranslate: 'trans_auto_translate',
+                systemPrompt: 'trans_system_prompt',
+                legacyConfig: 'trans_config',
+                legacyLastModel: 'trans_last_model'
+            };
+
+            function genId() {
+                return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+            }
+
             const $ = id => document.getElementById(id);
 
             const els = {
                 toggleSettings: $('toggleSettings'),
                 settingsPanel: $('settingsPanel'),
+                profileSelect: $('profileSelect'),
+                addProfileBtn: $('addProfileBtn'),
+                delProfileBtn: $('delProfileBtn'),
+                profileName: $('profileName'),
                 baseUrl: $('baseUrl'),
                 apiKey: $('apiKey'),
-                modelName: $('modelName'),
+                autoDelay: $('autoDelay'),
                 systemPrompt: $('systemPrompt'),
+                modelSelect: $('modelSelect'),
+                addModelBtn: $('addModelBtn'),
+                delModelBtn: $('delModelBtn'),
+                modelAddRow: $('modelAddRow'),
+                newModelInput: $('newModelInput'),
+                confirmAddModelBtn: $('confirmAddModelBtn'),
+                cancelAddModelBtn: $('cancelAddModelBtn'),
+                toggleExtraBody: $('toggleExtraBody'),
+                extraBodyPanel: $('extraBodyPanel'),
+                extraBodyList: $('extraBodyList'),
+                addExtraBodyBtn: $('addExtraBodyBtn'),
+                autoTranslate: $('autoTranslate'),
                 inputBox: $('inputBox'),
                 outputBox: $('outputBox'),
                 translateBtn: $('translateBtn'),
@@ -403,32 +686,294 @@ Title: 《Options》`
                 tokenInfo: $('tokenInfo')
             };
 
-            function loadConfig() {
-                const saved = localStorage.getItem('trans_config');
-                if (saved) {
-                    try {
-                        const cfg = JSON.parse(saved);
-                        els.baseUrl.value = cfg.baseUrl || DEFAULTS.baseUrl;
-                        els.apiKey.value = cfg.apiKey || '';
-                        els.modelName.value = cfg.model || DEFAULTS.model;
-                        els.systemPrompt.value = cfg.systemPrompt || DEFAULTS.systemPrompt;
-                        return;
-                    } catch (e) { }
+            function getProfiles() {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.profiles)) || [];
+                } catch (e) {
+                    return [];
                 }
-                els.baseUrl.value = DEFAULTS.baseUrl;
-                els.apiKey.value = '';
-                els.modelName.value = DEFAULTS.model;
-                els.systemPrompt.value = DEFAULTS.systemPrompt;
             }
 
-            function saveConfig() {
-                const cfg = {
-                    baseUrl: els.baseUrl.value.trim(),
-                    apiKey: els.apiKey.value.trim(),
-                    model: els.modelName.value.trim(),
-                    systemPrompt: els.systemPrompt.value
-                };
-                localStorage.setItem('trans_config', JSON.stringify(cfg));
+            function saveProfiles(profiles) {
+                localStorage.setItem(STORAGE_KEYS.profiles, JSON.stringify(profiles));
+            }
+
+            function getActiveProfileId() {
+                return localStorage.getItem(STORAGE_KEYS.activeProfile) || '';
+            }
+
+            function setActiveProfileId(id) {
+                localStorage.setItem(STORAGE_KEYS.activeProfile, id);
+            }
+
+            function getActiveProfile() {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                return profiles.find(p => p.id === activeId) || profiles[0] || null;
+            }
+
+            function migrateLegacyConfig() {
+                const legacy = localStorage.getItem(STORAGE_KEYS.legacyConfig);
+                if (!legacy) return;
+                try {
+                    const cfg = JSON.parse(legacy);
+                    const profiles = getProfiles();
+                    if (profiles.length === 0 && (cfg.baseUrl || cfg.apiKey)) {
+                        const legacyModel = localStorage.getItem(STORAGE_KEYS.legacyLastModel) || cfg.model || 'deepseek-chat';
+                        const profile = {
+                            id: genId(),
+                            name: '默认配置',
+                            baseUrl: cfg.baseUrl || 'https://api.deepseek.com/v1',
+                            apiKey: cfg.apiKey || '',
+                            models: [legacyModel],
+                            lastModel: legacyModel
+                        };
+                        saveProfiles([profile]);
+                        setActiveProfileId(profile.id);
+                    }
+                    if (cfg.systemPrompt) {
+                        localStorage.setItem(STORAGE_KEYS.systemPrompt, cfg.systemPrompt);
+                    }
+                    localStorage.removeItem(STORAGE_KEYS.legacyConfig);
+                    localStorage.removeItem(STORAGE_KEYS.legacyLastModel);
+                } catch (e) {}
+            }
+
+            function migrateProfileFields() {
+                let changed = false;
+                const profiles = getProfiles();
+                profiles.forEach(p => {
+                    if (!Array.isArray(p.models)) {
+                        p.models = p.lastModel ? [p.lastModel] : ['deepseek-chat'];
+                        changed = true;
+                    }
+                    if (!p.lastModel && p.models.length > 0) {
+                        p.lastModel = p.models[0];
+                        changed = true;
+                    }
+                    if (!p.extraBody || typeof p.extraBody !== 'object') {
+                        p.extraBody = {};
+                        changed = true;
+                    }
+                });
+                if (changed) saveProfiles(profiles);
+            }
+
+            function renderProfileSelect() {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                els.profileSelect.innerHTML = '';
+                profiles.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.name || '未命名';
+                    if (p.id === activeId) opt.selected = true;
+                    els.profileSelect.appendChild(opt);
+                });
+            }
+
+            function renderModelSelect() {
+                const profile = getActiveProfile();
+                els.modelSelect.innerHTML = '';
+                if (!profile) return;
+                const models = profile.models || [];
+                const lastModel = profile.lastModel || '';
+                models.forEach(m => {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = m;
+                    if (m === lastModel) opt.selected = true;
+                    els.modelSelect.appendChild(opt);
+                });
+                if (!lastModel && models.length > 0) {
+                    els.modelSelect.value = models[0];
+                }
+            }
+
+            function loadActiveProfile() {
+                const profile = getActiveProfile();
+                if (profile) {
+                    els.profileName.value = profile.name || '';
+                    els.baseUrl.value = profile.baseUrl || '';
+                    els.apiKey.value = profile.apiKey || '';
+                    setActiveProfileId(profile.id);
+                } else {
+                    els.profileName.value = '';
+                    els.baseUrl.value = '';
+                    els.apiKey.value = '';
+                }
+                renderModelSelect();
+                renderExtraBody();
+            }
+
+            function saveCurrentProfile() {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx >= 0) {
+                    profiles[idx].name = els.profileName.value.trim();
+                    profiles[idx].baseUrl = els.baseUrl.value.trim();
+                    profiles[idx].apiKey = els.apiKey.value.trim();
+                    saveProfiles(profiles);
+                }
+            }
+
+            function saveCurrentModel() {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx >= 0) {
+                    const model = els.modelSelect.value;
+                    profiles[idx].lastModel = model;
+                    if (!profiles[idx].models.includes(model)) {
+                        profiles[idx].models.push(model);
+                    }
+                    saveProfiles(profiles);
+                }
+            }
+
+            function addModelToProfile(modelName) {
+                const model = modelName.trim();
+                if (!model) return;
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx < 0) return;
+                if (!profiles[idx].models.includes(model)) {
+                    profiles[idx].models.push(model);
+                }
+                profiles[idx].lastModel = model;
+                saveProfiles(profiles);
+                renderModelSelect();
+            }
+
+            function removeModelFromProfile(modelName) {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx < 0) return;
+                const models = profiles[idx].models;
+                const mi = models.indexOf(modelName);
+                if (mi >= 0) {
+                    models.splice(mi, 1);
+                    if (models.length === 0) {
+                        models.push('deepseek-chat');
+                    }
+                    if (profiles[idx].lastModel === modelName) {
+                        profiles[idx].lastModel = models[0];
+                    }
+                    saveProfiles(profiles);
+                    renderModelSelect();
+                }
+            }
+
+            const PROTECTED_KEYS = ['stream', 'model', 'messages'];
+
+            function parseExtraBodyValue(val) {
+                if (val === '') return '';
+                try {
+                    return JSON.parse(val);
+                } catch (e) {
+                    return val;
+                }
+            }
+
+            function stringifyExtraBodyValue(val) {
+                if (val === '' || val === undefined || val === null) return '';
+                if (typeof val === 'string') return val;
+                return JSON.stringify(val);
+            }
+
+            function renderExtraBody() {
+                const profile = getActiveProfile();
+                els.extraBodyList.innerHTML = '';
+                if (!profile || !profile.extraBody) return;
+                Object.entries(profile.extraBody).forEach(([key, val]) => {
+                    addExtraBodyRow(key, stringifyExtraBodyValue(val));
+                });
+            }
+
+            function addExtraBodyRow(key, val) {
+                const row = document.createElement('div');
+                row.className = 'extra-body-row';
+                const keyInput = document.createElement('input');
+                keyInput.type = 'text';
+                keyInput.className = 'key-input';
+                keyInput.value = key;
+                keyInput.placeholder = '参数名';
+                const valInput = document.createElement('input');
+                valInput.type = 'text';
+                valInput.className = 'val-input';
+                valInput.value = val;
+                valInput.placeholder = '值 (支持 JSON)';
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn btn-sm btn-danger';
+                delBtn.textContent = '×';
+                delBtn.addEventListener('click', () => {
+                    row.remove();
+                    saveExtraBodyFromUI();
+                });
+                keyInput.addEventListener('input', () => saveExtraBodyFromUI());
+                valInput.addEventListener('input', () => saveExtraBodyFromUI());
+                row.appendChild(keyInput);
+                row.appendChild(valInput);
+                row.appendChild(delBtn);
+                els.extraBodyList.appendChild(row);
+            }
+
+            function saveExtraBodyFromUI() {
+                const profiles = getProfiles();
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx < 0) return;
+                const extraBody = {};
+                const rows = els.extraBodyList.querySelectorAll('.extra-body-row');
+                rows.forEach(row => {
+                    const key = row.querySelector('.key-input').value.trim();
+                    const valStr = row.querySelector('.val-input').value;
+                    if (!key) return;
+                    if (PROTECTED_KEYS.includes(key)) return;
+                    extraBody[key] = parseExtraBodyValue(valStr);
+                });
+                profiles[idx].extraBody = extraBody;
+                saveProfiles(profiles);
+            }
+
+            function loadConfig() {
+                migrateLegacyConfig();
+                migrateProfileFields();
+
+                let profiles = getProfiles();
+                if (profiles.length === 0) {
+                    const defaultProfile = {
+                        id: genId(),
+                        name: 'DeepSeek',
+                        baseUrl: 'https://api.deepseek.com/v1',
+                        apiKey: 'sk-72af88305a2549f2897e22938b94d853',
+                        models: ['deepseek-chat'],
+                        lastModel: 'deepseek-chat',
+                        extraBody: {}
+                    };
+                    saveProfiles([defaultProfile]);
+                    setActiveProfileId(defaultProfile.id);
+                }
+
+                if (!localStorage.getItem(STORAGE_KEYS.activeProfile)) {
+                    const ps = getProfiles();
+                    if (ps.length > 0) setActiveProfileId(ps[0].id);
+                }
+
+                renderProfileSelect();
+                loadActiveProfile();
+
+                const autoDelay = localStorage.getItem(STORAGE_KEYS.autoDelay) || '1000';
+                els.autoDelay.value = autoDelay;
+
+                const autoTranslate = localStorage.getItem(STORAGE_KEYS.autoTranslate) === 'true';
+                els.autoTranslate.checked = autoTranslate;
+
+                const systemPrompt = localStorage.getItem(STORAGE_KEYS.systemPrompt) || DEFAULTS.systemPrompt;
+                els.systemPrompt.value = systemPrompt;
             }
 
             function detectLanguage(text) {
@@ -464,21 +1009,38 @@ Title: 《Options》`
                 }
             }
 
+            let autoTranslateTimer = null;
+            let isTranslating = false;
+
+            function scheduleAutoTranslate() {
+                if (!els.autoTranslate.checked) return;
+                clearTimeout(autoTranslateTimer);
+                const delay = parseInt(els.autoDelay.value) || 1000;
+                autoTranslateTimer = setTimeout(() => {
+                    if (els.inputBox.value.trim() && !isTranslating) {
+                        translate();
+                    }
+                }, delay);
+            }
+
+            function cancelAutoTranslate() {
+                clearTimeout(autoTranslateTimer);
+            }
+
             async function translate() {
                 const text = els.inputBox.value.trim();
                 if (!text) return;
 
-                const baseUrl = els.baseUrl.value.trim();
-                const apiKey = els.apiKey.value.trim();
-                const model = els.modelName.value.trim() || DEFAULTS.model;
-                const systemPrompt = els.systemPrompt.value;
-
-                if (!apiKey) {
-                    els.statusText.textContent = '请先设置 API Key';
+                const profile = getActiveProfile();
+                if (!profile || !profile.apiKey) {
+                    els.statusText.textContent = '请先配置 API Key';
                     els.statusText.className = 'error';
                     els.settingsPanel.classList.add('open');
                     return;
                 }
+
+                const model = els.modelSelect.value || 'deepseek-chat';
+                const systemPrompt = els.systemPrompt.value;
 
                 const lang = detectLanguage(text);
                 if (lang === 'unknown') {
@@ -486,6 +1048,8 @@ Title: 《Options》`
                     return;
                 }
 
+                cancelAutoTranslate();
+                isTranslating = true;
                 els.translateBtn.disabled = true;
                 els.outputBox.value = '';
                 els.outputCharCount.textContent = '0 字符';
@@ -493,22 +1057,32 @@ Title: 《Options》`
                 els.statusText.innerHTML = '<span class="loading"></span>翻译中...';
                 els.tokenInfo.textContent = '';
 
-                const url = `${baseUrl.replace(/\/+$/, '')}/chat/completions`;
+                saveCurrentModel();
+
+                const url = `${profile.baseUrl.replace(/\/+$/, '')}/chat/completions`;
                 const body = {
                     model: model,
                     messages: [
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: getUserMessage(text, lang) }
                     ],
-                    stream: true
+                    stream: false
                 };
+
+                if (profile.extraBody && typeof profile.extraBody === 'object') {
+                    Object.entries(profile.extraBody).forEach(([k, v]) => {
+                        if (!PROTECTED_KEYS.includes(k)) {
+                            body[k] = v;
+                        }
+                    });
+                }
 
                 try {
                     const resp = await fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${apiKey}`
+                            'Authorization': `Bearer ${profile.apiKey}`
                         },
                         body: JSON.stringify(body)
                     });
@@ -525,36 +1099,48 @@ Title: 《Options》`
                         throw new Error(errMsg);
                     }
 
-                    const reader = resp.body.getReader();
-                    const decoder = new TextDecoder();
+                    const contentType = resp.headers.get('content-type') || '';
                     let result = '';
-                    let buffer = '';
 
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
+                    if (contentType.includes('text/event-stream') || body.stream) {
+                        const reader = resp.body.getReader();
+                        const decoder = new TextDecoder();
+                        let buffer = '';
 
-                        buffer += decoder.decode(value, { stream: true });
-                        const lines = buffer.split('\n');
-                        buffer = lines.pop() || '';
+                        while (true) {
+                            const { done, value } = await reader.read();
+                            if (done) break;
 
-                        for (const line of lines) {
-                            const trimmed = line.trim();
-                            if (!trimmed || !trimmed.startsWith('data: ')) continue;
-                            const data = trimmed.slice(6);
-                            if (data === '[DONE]') continue;
-                            try {
-                                const json = JSON.parse(data);
-                                const delta = json.choices?.[0]?.delta?.content;
-                                if (delta) {
-                                    result += delta;
-                                    els.outputBox.value = result;
-                                    els.outputCharCount.textContent = `${result.length} 字符`;
-                                }
-                                if (json.usage) {
-                                    els.tokenInfo.textContent = `Prompt: ${json.usage.prompt_tokens} | Completion: ${json.usage.completion_tokens} | Total: ${json.usage.total_tokens}`;
-                                }
-                            } catch (e) { }
+                            buffer += decoder.decode(value, { stream: true });
+                            const lines = buffer.split('\n');
+                            buffer = lines.pop() || '';
+
+                            for (const line of lines) {
+                                const trimmed = line.trim();
+                                if (!trimmed || !trimmed.startsWith('data: ')) continue;
+                                const data = trimmed.slice(6);
+                                if (data === '[DONE]') continue;
+                                try {
+                                    const json = JSON.parse(data);
+                                    const delta = json.choices?.[0]?.delta?.content;
+                                    if (delta) {
+                                        result += delta;
+                                        els.outputBox.value = result;
+                                        els.outputCharCount.textContent = `${result.length} 字符`;
+                                    }
+                                    if (json.usage) {
+                                        els.tokenInfo.textContent = `Prompt: ${json.usage.prompt_tokens} | Completion: ${json.usage.completion_tokens} | Total: ${json.usage.total_tokens}`;
+                                    }
+                                } catch (e) {}
+                            }
+                        }
+                    } else {
+                        const json = await resp.json();
+                        result = json.choices?.[0]?.message?.content || '';
+                        els.outputBox.value = result;
+                        els.outputCharCount.textContent = `${result.length} 字符`;
+                        if (json.usage) {
+                            els.tokenInfo.textContent = `Prompt: ${json.usage.prompt_tokens} | Completion: ${json.usage.completion_tokens} | Total: ${json.usage.total_tokens}`;
                         }
                     }
 
@@ -564,6 +1150,7 @@ Title: 《Options》`
                     els.statusText.textContent = `错误: ${err.message}`;
                     els.statusText.className = 'error';
                 } finally {
+                    isTranslating = false;
                     els.translateBtn.disabled = false;
                 }
             }
@@ -572,7 +1159,16 @@ Title: 《Options》`
                 els.settingsPanel.classList.toggle('open');
             });
 
-            els.inputBox.addEventListener('input', updateLangIndicator);
+            els.inputBox.addEventListener('input', () => {
+                updateLangIndicator();
+                if (!els.inputBox.value.trim()) {
+                    els.outputBox.value = '';
+                    els.outputCharCount.textContent = '0 字符';
+                    cancelAutoTranslate();
+                    return;
+                }
+                scheduleAutoTranslate();
+            });
 
             els.translateBtn.addEventListener('click', translate);
 
@@ -585,14 +1181,135 @@ Title: 《Options》`
                 });
             });
 
-            [els.baseUrl, els.apiKey, els.modelName, els.systemPrompt].forEach(el => {
-                el.addEventListener('change', saveConfig);
-                el.addEventListener('input', saveConfig);
+            els.profileSelect.addEventListener('change', () => {
+                const newId = els.profileSelect.value;
+                saveCurrentProfile();
+                setActiveProfileId(newId);
+                renderProfileSelect();
+                loadActiveProfile();
+            });
+
+            els.addProfileBtn.addEventListener('click', () => {
+                saveCurrentProfile();
+                const newProfile = {
+                    id: genId(),
+                    name: '新配置',
+                    baseUrl: '',
+                    apiKey: '',
+                    models: ['deepseek-chat'],
+                    lastModel: 'deepseek-chat',
+                    extraBody: {}
+                };
+                const profiles = getProfiles();
+                profiles.push(newProfile);
+                saveProfiles(profiles);
+                setActiveProfileId(newProfile.id);
+                renderProfileSelect();
+                loadActiveProfile();
+                els.profileName.focus();
+                els.profileName.select();
+            });
+
+            els.delProfileBtn.addEventListener('click', () => {
+                const profiles = getProfiles();
+                if (profiles.length <= 1) {
+                    els.statusText.textContent = '至少保留一个配置';
+                    els.statusText.className = 'error';
+                    return;
+                }
+                const activeId = getActiveProfileId();
+                const idx = profiles.findIndex(p => p.id === activeId);
+                if (idx >= 0) {
+                    profiles.splice(idx, 1);
+                    saveProfiles(profiles);
+                    setActiveProfileId(profiles[0].id);
+                    renderProfileSelect();
+                    loadActiveProfile();
+                }
+            });
+
+            [els.profileName, els.baseUrl, els.apiKey].forEach(el => {
+                el.addEventListener('input', saveCurrentProfile);
+                el.addEventListener('change', saveCurrentProfile);
+            });
+
+            els.modelSelect.addEventListener('change', () => {
+                saveCurrentModel();
+            });
+
+            els.addModelBtn.addEventListener('click', () => {
+                els.modelAddRow.classList.add('visible');
+                els.newModelInput.value = '';
+                els.newModelInput.focus();
+            });
+
+            els.cancelAddModelBtn.addEventListener('click', () => {
+                els.modelAddRow.classList.remove('visible');
+            });
+
+            function confirmAddModel() {
+                const model = els.newModelInput.value.trim();
+                if (!model) return;
+                addModelToProfile(model);
+                els.modelAddRow.classList.remove('visible');
+            }
+
+            els.confirmAddModelBtn.addEventListener('click', confirmAddModel);
+
+            els.newModelInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    confirmAddModel();
+                } else if (e.key === 'Escape') {
+                    els.modelAddRow.classList.remove('visible');
+                }
+            });
+
+            els.delModelBtn.addEventListener('click', () => {
+                const model = els.modelSelect.value;
+                if (!model) return;
+                removeModelFromProfile(model);
+            });
+
+            els.toggleExtraBody.addEventListener('click', () => {
+                els.extraBodyPanel.classList.toggle('open');
+                els.toggleExtraBody.textContent = els.extraBodyPanel.classList.contains('open') ? '收起' : '编辑';
+            });
+
+            els.addExtraBodyBtn.addEventListener('click', () => {
+                addExtraBodyRow('', '');
+                const rows = els.extraBodyList.querySelectorAll('.extra-body-row');
+                const lastRow = rows[rows.length - 1];
+                if (lastRow) lastRow.querySelector('.key-input').focus();
+            });
+
+            els.autoDelay.addEventListener('input', () => {
+                localStorage.setItem(STORAGE_KEYS.autoDelay, els.autoDelay.value);
+            });
+            els.autoDelay.addEventListener('change', () => {
+                localStorage.setItem(STORAGE_KEYS.autoDelay, els.autoDelay.value);
+            });
+
+            els.autoTranslate.addEventListener('change', () => {
+                localStorage.setItem(STORAGE_KEYS.autoTranslate, els.autoTranslate.checked);
+                if (els.autoTranslate.checked && els.inputBox.value.trim()) {
+                    scheduleAutoTranslate();
+                } else {
+                    cancelAutoTranslate();
+                }
+            });
+
+            els.systemPrompt.addEventListener('input', () => {
+                localStorage.setItem(STORAGE_KEYS.systemPrompt, els.systemPrompt.value);
+            });
+            els.systemPrompt.addEventListener('change', () => {
+                localStorage.setItem(STORAGE_KEYS.systemPrompt, els.systemPrompt.value);
             });
 
             document.addEventListener('keydown', e => {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
                     e.preventDefault();
+                    cancelAutoTranslate();
                     translate();
                 }
             });
