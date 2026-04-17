@@ -1069,13 +1069,13 @@ Title: 《Options》`
                     opt.textContent = p.name;
                     els.userPromptPreset.appendChild(opt);
                 });
-                const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === currentZh && p.en === currentEn);
-                if (matchedBuiltin >= 0) {
-                    els.userPromptPreset.value = 'builtin-' + matchedBuiltin;
+                const matchedCustom = customPrompts.findIndex(p => p.zh === currentZh && p.en === currentEn);
+                if (matchedCustom >= 0) {
+                    els.userPromptPreset.value = 'custom-' + customPrompts[matchedCustom].id;
                 } else {
-                    const matchedCustom = customPrompts.findIndex(p => p.zh === currentZh && p.en === currentEn);
-                    if (matchedCustom >= 0) {
-                        els.userPromptPreset.value = 'custom-' + customPrompts[matchedCustom].id;
+                    const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === currentZh && p.en === currentEn);
+                    if (matchedBuiltin >= 0) {
+                        els.userPromptPreset.value = 'builtin-' + matchedBuiltin;
                     } else {
                         els.userPromptPreset.value = '';
                     }
@@ -1412,13 +1412,26 @@ Title: 《Options》`
             function saveUserPrompt() {
                 const data = { zh: els.userPromptZh.value, en: els.userPromptEn.value };
                 localStorage.setItem(STORAGE_KEYS.userPrompt, JSON.stringify(data));
-                const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === data.zh && p.en === data.en);
-                if (matchedBuiltin >= 0) {
-                    els.userPromptPreset.value = 'builtin-' + matchedBuiltin;
-                } else {
+                const currentVal = els.userPromptPreset.value;
+                if (currentVal.startsWith('custom-')) {
+                    const id = currentVal.substring(7);
                     const customPrompts = getCustomUserPrompts();
-                    const matchedCustom = customPrompts.findIndex(p => p.zh === data.zh && p.en === data.en);
-                    els.userPromptPreset.value = matchedCustom >= 0 ? 'custom-' + customPrompts[matchedCustom].id : '';
+                    const current = customPrompts.find(p => p.id === id);
+                    if (current && current.zh === data.zh && current.en === data.en) return;
+                } else if (currentVal.startsWith('builtin-')) {
+                    const idx = parseInt(currentVal.split('-')[1]);
+                    if (idx >= 0 && idx < USER_PROMPT_PRESETS.length) {
+                        const current = USER_PROMPT_PRESETS[idx];
+                        if (current.zh === data.zh && current.en === data.en) return;
+                    }
+                }
+                const customPrompts = getCustomUserPrompts();
+                const matchedCustom = customPrompts.findIndex(p => p.zh === data.zh && p.en === data.en);
+                if (matchedCustom >= 0) {
+                    els.userPromptPreset.value = 'custom-' + customPrompts[matchedCustom].id;
+                } else {
+                    const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === data.zh && p.en === data.en);
+                    els.userPromptPreset.value = matchedBuiltin >= 0 ? 'builtin-' + matchedBuiltin : '';
                 }
             }
 
