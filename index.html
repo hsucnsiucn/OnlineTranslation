@@ -415,11 +415,11 @@
                 border-radius: 50%
             }
 
-            .toggle-switch input:checked + .toggle-slider {
+            .toggle-switch input:checked+.toggle-slider {
                 background-color: var(--primary)
             }
 
-            .toggle-switch input:checked + .toggle-slider:before {
+            .toggle-switch input:checked+.toggle-slider:before {
                 transform: translateX(16px)
             }
 
@@ -545,6 +545,28 @@
                               rows="4"></textarea>
                 </div>
                 <div class="setting-row">
+                    <label>User Prompt 模板</label>
+                    <select id="userPromptPreset"></select>
+                    <div class="profile-actions">
+                        <button class="btn btn-sm"
+                                id="addPromptBtn">+ 新增</button>
+                        <button class="btn btn-sm btn-danger"
+                                id="delPromptBtn">删除</button>
+                    </div>
+                </div>
+                <div class="setting-row">
+                    <label style="font-size:12px;color:var(--text-light)">中文→英文</label>
+                    <textarea id="userPromptZh"
+                              rows="3"
+                              placeholder="中文输入时使用的 prompt，{text} 代表输入文本"></textarea>
+                </div>
+                <div class="setting-row">
+                    <label style="font-size:12px;color:var(--text-light)">英文→中文</label>
+                    <textarea id="userPromptEn"
+                              rows="3"
+                              placeholder="英文输入时使用的 prompt，{text} 代表输入文本"></textarea>
+                </div>
+                <div class="setting-row">
                     <label>自定义请求体</label>
                     <button class="btn btn-sm"
                             id="toggleExtraBody">编辑</button>
@@ -647,9 +669,41 @@ Title: 《Options》`
                 autoDelay: 'trans_auto_delay',
                 autoTranslate: 'trans_auto_translate',
                 systemPrompt: 'trans_system_prompt',
+                userPrompt: 'trans_user_prompt',
+                customUserPrompts: 'trans_custom_user_prompts',
                 legacyConfig: 'trans_config',
                 legacyLastModel: 'trans_last_model'
             };
+
+            const USER_PROMPT_PRESETS = [
+                {
+                    name: '标准翻译',
+                    zh: 'Translate to English (output translation only):\n\n{text}',
+                    en: '翻译为简体中文（仅输出译文内容）：\n\n{text}'
+                },
+                {
+                    name: '多义翻译',
+                    zh: 'Translate the following text to English. Provide 3 different translations that are semantically close but differ in nuance or wording:\n\n{text}',
+                    en: '将以下文本翻译为简体中文，提供3个语义相近但措辞或侧重点不同的译文：\n\n{text}'
+                },
+                {
+                    name: '词典释义',
+                    zh: 'Provide the English definition(s) of the following word/phrase as a dictionary entry, including part of speech, definitions, and example sentences:\n\n{text}',
+                    en: '请以词典条目的形式给出以下单词/短语的释义，包括词性、中文释义和例句：\n\n{text}'
+                }
+            ];
+
+            const DEFAULT_USER_PROMPT = { zh: USER_PROMPT_PRESETS[0].zh, en: USER_PROMPT_PRESETS[0].en };
+
+            function getCustomUserPrompts() {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEYS.customUserPrompts)) || [];
+                } catch { return []; }
+            }
+
+            function saveCustomUserPrompts(prompts) {
+                localStorage.setItem(STORAGE_KEYS.customUserPrompts, JSON.stringify(prompts));
+            }
 
             function genId() {
                 return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
@@ -668,6 +722,11 @@ Title: 《Options》`
                 apiKey: $('apiKey'),
                 autoDelay: $('autoDelay'),
                 systemPrompt: $('systemPrompt'),
+                userPromptPreset: $('userPromptPreset'),
+                userPromptZh: $('userPromptZh'),
+                userPromptEn: $('userPromptEn'),
+                addPromptBtn: $('addPromptBtn'),
+                delPromptBtn: $('delPromptBtn'),
                 modelSelect: $('modelSelect'),
                 addModelBtn: $('addModelBtn'),
                 delModelBtn: $('delModelBtn'),
@@ -742,7 +801,7 @@ Title: 《Options》`
                     }
                     localStorage.removeItem(STORAGE_KEYS.legacyConfig);
                     localStorage.removeItem(STORAGE_KEYS.legacyLastModel);
-                } catch (e) {}
+                } catch (e) { }
             }
 
             function migrateProfileFields() {
@@ -980,6 +1039,47 @@ Title: 《Options》`
 
                 const systemPrompt = localStorage.getItem(STORAGE_KEYS.systemPrompt) || DEFAULTS.systemPrompt;
                 els.systemPrompt.value = systemPrompt;
+
+                let userPrompt;
+                try {
+                    userPrompt = JSON.parse(localStorage.getItem(STORAGE_KEYS.userPrompt)) || DEFAULT_USER_PROMPT;
+                } catch (e) {
+                    userPrompt = DEFAULT_USER_PROMPT;
+                }
+                els.userPromptZh.value = userPrompt.zh || '';
+                els.userPromptEn.value = userPrompt.en || '';
+
+                renderUserPromptPresets();
+            }
+
+            function renderUserPromptPresets() {
+                const currentZh = els.userPromptZh.value;
+                const currentEn = els.userPromptEn.value;
+                els.userPromptPreset.innerHTML = '';
+                USER_PROMPT_PRESETS.forEach((p, i) => {
+                    const opt = document.createElement('option');
+                    opt.value = 'builtin-' + i;
+                    opt.textContent = p.name;
+                    els.userPromptPreset.appendChild(opt);
+                });
+                const customPrompts = getCustomUserPrompts();
+                customPrompts.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = 'custom-' + p.id;
+                    opt.textContent = p.name;
+                    els.userPromptPreset.appendChild(opt);
+                });
+                const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === currentZh && p.en === currentEn);
+                if (matchedBuiltin >= 0) {
+                    els.userPromptPreset.value = 'builtin-' + matchedBuiltin;
+                } else {
+                    const matchedCustom = customPrompts.findIndex(p => p.zh === currentZh && p.en === currentEn);
+                    if (matchedCustom >= 0) {
+                        els.userPromptPreset.value = 'custom-' + customPrompts[matchedCustom].id;
+                    } else {
+                        els.userPromptPreset.value = '';
+                    }
+                }
             }
 
             function detectLanguage(text) {
@@ -1008,11 +1108,8 @@ Title: 《Options》`
             }
 
             function getUserMessage(text, lang) {
-                if (lang === 'zh') {
-                    return `Translate to English (output translation only):\n\n${text}`;
-                } else {
-                    return `翻译为简体中文（仅输出译文内容）：\n\n${text}`;
-                }
+                const template = lang === 'zh' ? els.userPromptZh.value : els.userPromptEn.value;
+                return template.replace('{text}', text);
             }
 
             let autoTranslateTimer = null;
@@ -1137,7 +1234,7 @@ Title: 《Options》`
                                     if (json.usage) {
                                         els.tokenInfo.textContent = `Prompt: ${json.usage.prompt_tokens} | Completion: ${json.usage.completion_tokens} | Total: ${json.usage.total_tokens}`;
                                     }
-                                } catch (e) {}
+                                } catch (e) { }
                             }
                         }
                     } else {
@@ -1310,6 +1407,82 @@ Title: 《Options》`
             });
             els.systemPrompt.addEventListener('change', () => {
                 localStorage.setItem(STORAGE_KEYS.systemPrompt, els.systemPrompt.value);
+            });
+
+            function saveUserPrompt() {
+                const data = { zh: els.userPromptZh.value, en: els.userPromptEn.value };
+                localStorage.setItem(STORAGE_KEYS.userPrompt, JSON.stringify(data));
+                const matchedBuiltin = USER_PROMPT_PRESETS.findIndex(p => p.zh === data.zh && p.en === data.en);
+                if (matchedBuiltin >= 0) {
+                    els.userPromptPreset.value = 'builtin-' + matchedBuiltin;
+                } else {
+                    const customPrompts = getCustomUserPrompts();
+                    const matchedCustom = customPrompts.findIndex(p => p.zh === data.zh && p.en === data.en);
+                    els.userPromptPreset.value = matchedCustom >= 0 ? 'custom-' + customPrompts[matchedCustom].id : '';
+                }
+            }
+
+            els.userPromptPreset.addEventListener('change', () => {
+                const val = els.userPromptPreset.value;
+                if (val.startsWith('builtin-')) {
+                    const idx = parseInt(val.split('-')[1]);
+                    if (idx >= 0 && idx < USER_PROMPT_PRESETS.length) {
+                        const preset = USER_PROMPT_PRESETS[idx];
+                        els.userPromptZh.value = preset.zh;
+                        els.userPromptEn.value = preset.en;
+                        saveUserPrompt();
+                    }
+                } else if (val.startsWith('custom-')) {
+                    const id = val.substring(7);
+                    const customPrompts = getCustomUserPrompts();
+                    const preset = customPrompts.find(p => p.id === id);
+                    if (preset) {
+                        els.userPromptZh.value = preset.zh;
+                        els.userPromptEn.value = preset.en;
+                        saveUserPrompt();
+                    }
+                }
+            });
+
+            els.userPromptZh.addEventListener('input', saveUserPrompt);
+            els.userPromptZh.addEventListener('change', saveUserPrompt);
+            els.userPromptEn.addEventListener('input', saveUserPrompt);
+            els.userPromptEn.addEventListener('change', saveUserPrompt);
+
+            els.addPromptBtn.addEventListener('click', () => {
+                const name = prompt('请输入新预设名称：');
+                if (!name || !name.trim()) return;
+                const newPreset = {
+                    id: genId(),
+                    name: name.trim(),
+                    zh: els.userPromptZh.value,
+                    en: els.userPromptEn.value
+                };
+                const customPrompts = getCustomUserPrompts();
+                customPrompts.push(newPreset);
+                saveCustomUserPrompts(customPrompts);
+                renderUserPromptPresets();
+                els.userPromptPreset.value = 'custom-' + newPreset.id;
+            });
+
+            els.delPromptBtn.addEventListener('click', () => {
+                const val = els.userPromptPreset.value;
+                if (!val.startsWith('custom-')) {
+                    els.statusText.textContent = '内置预设不可删除';
+                    els.statusText.className = 'error';
+                    return;
+                }
+                const id = val.substring(7);
+                const customPrompts = getCustomUserPrompts();
+                const idx = customPrompts.findIndex(p => p.id === id);
+                if (idx >= 0) {
+                    customPrompts.splice(idx, 1);
+                    saveCustomUserPrompts(customPrompts);
+                    els.userPromptZh.value = USER_PROMPT_PRESETS[0].zh;
+                    els.userPromptEn.value = USER_PROMPT_PRESETS[0].en;
+                    saveUserPrompt();
+                    renderUserPromptPresets();
+                }
             });
 
             document.addEventListener('keydown', e => {
